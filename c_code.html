@@ -1,0 +1,105 @@
+e<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <title>C Program - Linear Probing Hashing</title>
+    <style>
+        body {
+            background: #f2f7ff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2b4eff;
+            text-align: center;
+        }
+
+        pre {
+            background: #ffffff;
+            padding: 20px;
+            border: 2px solid #2b4eff;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-size: 16px;
+        }
+
+        a {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background: #2b4eff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        a:hover {
+            background: #1c36b5;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html">⬅ Back to Simulation</a>
+    <h1>C Program (Linear Probing Hashing)</h1>
+
+    <pre>
+#include <stdio.h>
+#define SIZE 10
+
+int hashTable[SIZE];
+
+void initialize() {
+    for (int i = 0; i < SIZE; i++)
+        hashTable[i] = -1;
+}
+
+void insert(int value) {
+    int index = value % SIZE;
+
+    for (int i = 0; i < SIZE; i++) {
+        int probeIndex = (index + i) % SIZE;
+        if (hashTable[probeIndex] == -1) {
+            hashTable[probeIndex] = value;
+            printf("Inserted %d at index %d\\n", value, probeIndex);
+            return;
+        }
+    }
+
+    printf("Hash table is full! Cannot insert %d\\n", value);
+}
+
+void display() {
+    printf("\\nHash Table:\\n");
+    for (int i = 0; i < SIZE; i++) {
+        if (hashTable[i] == -1)
+            printf("[%d]  -\\n", i);
+        else
+            printf("[%d]  %d\\n", i, hashTable[i]);
+    }
+}
+
+int main() {
+    int n, value;
+
+    initialize();
+
+    printf("Enter number of values to insert: ");
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        printf("Enter value %d: ", i + 1);
+        scanf("%d", &value);
+        insert(value);
+    }
+
+    display();
+
+    return 0;
+}
+    </pre>
+
+</body>
+</html>

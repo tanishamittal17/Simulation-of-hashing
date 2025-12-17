@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <button onclick="window.open('c_code.html')">View C Code (C Program)</button>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Hashing Simulation</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:"Poppins", sans-serif;
+    }
+
+    body{
+        background: linear-gradient(135deg, #3a1c71, #d76d77, #ffaf7b);
+        min-height:100vh;
+        padding:40px 20px;
+        transition:0.4s;
+    }
+
+    .container{
+        max-width:900px;
+        margin:auto;
+        background:rgba(255,255,255,0.15);
+        padding:30px;
+        border-radius:25px;
+        backdrop-filter:blur(10px);
+        box-shadow:0 10px 40px rgba(0,0,0,0.3);
+        animation:fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn{
+        from{opacity:0; transform:translateY(30px);}
+        to{opacity:1; transform:translateY(0);}
+    }
+
+    h1{
+        text-align:center;
+        color:white;
+        margin-bottom:25px;
+        font-size:2.3rem;
+        font-weight:600;
+    }
+
+    .input-area{
+        display:flex;
+        gap:15px;
+        margin-bottom:25px;
+    }
+
+    input{
+        flex:1;
+        padding:12px;
+        border:none;
+        border-radius:12px;
+        font-size:1.1rem;
+        outline:none;
+    }
+
+    button{
+        padding:12px 18px;
+        font-size:1rem;
+        border:none;
+        border-radius:12px;
+        color:white;
+        cursor:pointer;
+        background:linear-gradient(135deg, #667eea, #764ba2);
+        transition:0.3s;
+    }
+
+    button:hover{
+        transform:scale(1.05);
+        background:linear-gradient(135deg, #43cea2, #185a9d);
+    }
+
+    #table-container{
+        margin-top:20px;
+        width:100%;
+        overflow-x:auto;
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+        background:white;
+        border-radius:15px;
+        overflow:hidden;
+    }
+
+    th, td{
+        padding:14px;
+        text-align:center;
+        border-bottom:1px solid #eee;
+    }
+
+    tr:hover{
+        background:#f4f4f4;
+        transition:0.3s;
+    }
+
+    .highlight{
+        background:#ffeaa7 !important;
+        animation:pulse 0.8s ease;
+    }
+
+    @keyframes pulse{
+        0%{transform:scale(1);}
+        50%{transform:scale(1.05);}
+        100%{transform:scale(1);}
+    }
+
+    .steps-box{
+        margin-top:20px;
+        background:white;
+        padding:15px;
+        border-radius:15px;
+        max-height:200px;
+        overflow-y:auto;
+        font-size:0.9rem;
+    }
+
+    .theme-btn{
+        position:fixed;
+        top:20px;
+        right:20px;
+    }
+</style>
+</head>
+
+<body>
+
+<button class="theme-btn" onclick="toggleTheme()">🌓 Theme</button>
+
+<div class="container">
+
+<h1>🔐 Advanced Hashing Simulation (Linear Probing)</h1>
+
+<div class="input-area">
+    <input type="number" id="valueInput" placeholder="Enter a number to insert">
+    <button onclick="insertValue()">Insert</button>
+    <button onclick="resetTable()">Reset</button>
+</div>
+
+<div id="table-container"></div>
+
+<div class="steps-box" id="steps"></div>
+
+</div>
+
+<script>
+    let tableSize = 10;
+    let hashTable = Array(tableSize).fill(null);
+
+    function renderTable() {
+        let html = "<table><tr><th>Index</th><th>Value</th></tr>";
+        
+        for (let i = 0; i < tableSize; i++) {
+            html += `<tr id="row${i}"><td>${i}</td><td>${hashTable[i] ?? "-"}</td></tr>`;
+        }
+        
+        html += "</table>";
+        document.getElementById("table-container").innerHTML = html;
+    }
+
+    function logStep(text){
+        document.getElementById("steps").innerHTML += "➡️ " + text + "<br>";
+        let stepsBox = document.getElementById("steps");
+        stepsBox.scrollTop = stepsBox.scrollHeight;
+    }
+
+    function highlight(i){
+        let row = document.getElementById("row" + i);
+        row.classList.add("highlight");
+        setTimeout(() => row.classList.remove("highlight"), 900);
+    }
+
+    function insertValue(){
+        let value = parseInt(document.getElementById("valueInput").value);
+
+        if(isNaN(value)){
+            alert("Please enter a valid number!");
+            return;
+        }
+
+        let index = value % tableSize;
+        logStep(`Hash(${value}) = ${index}`);
+        highlight(index);
+
+        let start = index;
+
+        while(hashTable[index] !== null){
+            logStep(`Collision at index ${index}, trying next...`);
+            index = (index + 1) % tableSize;
+            highlight(index);
+
+            if(index === start){
+                alert("Hash table is FULL!");
+                return;
+            }
+        }
+
+        hashTable[index] = value;
+        logStep(`Inserted ${value} at index ${index}`);
+        renderTable();
+    }
+
+    function resetTable(){
+        hashTable = Array(tableSize).fill(null);
+        document.getElementById("steps").innerHTML = "";
+        renderTable();
+    }
+
+    function toggleTheme(){
+        document.body.classList.toggle("dark");
+        if(document.body.classList.contains("dark")){
+            document.body.style.background = "#1e1e1e";
+        } else {
+            document.body.style.background =
+            "linear-gradient(135deg, #3a1c71, #d76d77, #ffaf7b)";
+        }
+    }
+
+    renderTable();
+</script>
+
+</body>
+</html>
